@@ -47,21 +47,29 @@ function seedDataCollection() {
         status:'Available',
         email:'areej.hossein@gmail.com'
     })
-    theNameJar.save();
-    corduroy.save();
-    theDayYouBegin.save();
+    // theNameJar.save();
+    const test = new bookModel({
+        title: 'The Day You Begin',
+        description:'National Book Award winner Jacqueline Woodson and two-time Pura Belpré Illustrator Award winner Rafael López have teamed up to create a poignant, yet heartening book about finding courage to connect, even when you feel scared and alone.',
+        status:'Available',
+        email:'yahya@gmail.com'
+    })
+    // corduroy.save();
+    // theDayYouBegin.save();
+    // test.save();
+
 }
-//  seedDataCollection(); // npm start
+ seedDataCollection(); // npm start
 
 
 
 server.get('/books', booksHandler);
 
 
-// localhost:3001/books?ownerName=razan
+// localhost:3001/books?email=areej.hossein@gmail.com
 function booksHandler(req,res) {
-    // let ownerName2 = req.query.ownerName;
-    bookModel.find({},function(err,booksData){
+    let reqemail = req.query.email;
+    bookModel.find({email:reqemail},function(err,booksData){
         if(err) {
             console.log('error in getting the data')
         } else {
