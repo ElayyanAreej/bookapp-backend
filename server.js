@@ -73,6 +73,9 @@ function seedDataCollection() {
 
 server.get("/books", booksHandler);
 server.post("/addBook", addBooksHandler);
+// delete('/deleteCat/:catId2',deleteCatHandler);
+// let bookData= await axios.delete(`${process.env.REACT_APP_SERVER}/deleteBook/${bookID}?email=${user.email}`)
+server.delete("/deleteBook/:bookID", deleteBooksHandler);
 
 // localhost:3001/books?email=areej.hossein@gmail.com
 function booksHandler(req, res) {
@@ -108,4 +111,36 @@ function addBooksHandler(req, res) {
       res.send(booksData);
     }
   });
+}
+
+// http://localhost:3001/deleteBook/6124fbffdf486a4a492252dd?email=areej.hossein@gmail.com 
+
+function deleteBooksHandler(req,res){
+    //to get id from req 
+let bookId= req.params.bookID;
+console.log(bookId);
+// to get email from req
+let email=req.query.email;
+console.log(email);
+
+// to remove data has the id 
+bookModel.remove({_id:bookId},(error,bookData)=>{
+    if(error) {
+        console.log('error in deleteing the data');
+    } else {
+        console.log('data deleted', bookData)
+        bookModel.find({ email }, function (err, booksData) {
+            if (err) {
+                console.log('error in getting the data')
+            } else {
+                console.log(booksData);
+                res.send(booksData)
+            }
+        })
+    }
+})
+
+
+
+
 }
