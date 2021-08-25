@@ -12,7 +12,9 @@ server.use(cors());
 server.use(express.json());
 
 // Build a Mongoose 'Book' schema with valid keys for `title`, `description`, `status`, and `email` (of the user that added the Book).
-mongoose.connect("mongodb://localhost:27017/book", {
+//"mongodb://localhost:27017/book"
+
+mongoose.connect(`${process.env.mongo_link}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -57,17 +59,17 @@ function seedDataCollection() {
     status: "Available",
     email: "areej.hossein@gmail.com",
   });
-  // theNameJar.save();
   const test = new bookModel({
     title: "The Day You Begin",
     description:
-      "National Book Award winner Jacqueline Woodson and two-time Pura Belpré Illustrator Award winner Rafael López have teamed up to create a poignant, yet heartening book about finding courage to connect, even when you feel scared and alone.",
+    "National Book Award winner Jacqueline Woodson and two-time Pura Belpré Illustrator Award winner Rafael López have teamed up to create a poignant, yet heartening book about finding courage to connect, even when you feel scared and alone.",
     status: "Available",
     email: "yahya@gmail.com",
   });
-  // corduroy.save();
-  // theDayYouBegin.save();
-  // test.save();
+  theNameJar.save();
+  corduroy.save();
+  theDayYouBegin.save();
+  test.save();
 }
 //  seedDataCollection(); // npm start
 
