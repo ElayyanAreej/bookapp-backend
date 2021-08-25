@@ -62,7 +62,7 @@ function seedDataCollection() {
   const test = new bookModel({
     title: "The Day You Begin",
     description:
-    "National Book Award winner Jacqueline Woodson and two-time Pura Belpré Illustrator Award winner Rafael López have teamed up to create a poignant, yet heartening book about finding courage to connect, even when you feel scared and alone.",
+      "National Book Award winner Jacqueline Woodson and two-time Pura Belpré Illustrator Award winner Rafael López have teamed up to create a poignant, yet heartening book about finding courage to connect, even when you feel scared and alone.",
     status: "Available",
     email: "yahya@gmail.com",
   });
@@ -78,6 +78,8 @@ server.post("/addBook", addBooksHandler);
 // delete('/deleteCat/:catId2',deleteCatHandler);
 // let bookData= await axios.delete(`${process.env.REACT_APP_SERVER}/deleteBook/${bookID}?email=${user.email}`)
 server.delete("/deleteBook/:bookID", deleteBooksHandler);
+// axios.put(`${process.env.REACT_APP_SERVER}/updateBook/${BookID}?email=${user.email}`
+server.put("/updateBook/:BookID", updateBookHandler);
 
 // localhost:3001/books?email=areej.hossein@gmail.com
 function booksHandler(req, res) {
@@ -115,34 +117,65 @@ function addBooksHandler(req, res) {
   });
 }
 
-// http://localhost:3001/deleteBook/6124fbffdf486a4a492252dd?email=areej.hossein@gmail.com 
+// http://localhost:3001/deleteBook/6124fbffdf486a4a492252dd?email=areej.hossein@gmail.com
 
-function deleteBooksHandler(req,res){
-    //to get id from req 
-let bookId= req.params.bookID;
-console.log(bookId);
-// to get email from req
-let email=req.query.email;
-console.log(email);
+function deleteBooksHandler(req, res) {
+  //to get id from req
+  let bookId = req.params.bookID;
+  console.log(bookId);
+  // to get email from req
+  let email = req.query.email;
+  console.log(email);
 
-// to remove data has the id 
-bookModel.remove({_id:bookId},(error,bookData)=>{
-    if(error) {
-        console.log('error in deleteing the data');
+  // to remove data has the id
+  bookModel.remove({ _id: bookId }, (error, bookData) => {
+    if (error) {
+      console.log("error in deleteing the data");
     } else {
-        console.log('data deleted', bookData)
-        bookModel.find({ email }, function (err, booksData) {
-            if (err) {
-                console.log('error in getting the data')
-            } else {
-                console.log(booksData);
-                res.send(booksData)
-            }
-        })
+      console.log("data deleted", bookData);
+      bookModel.find({ email }, function (err, booksData) {
+        if (err) {
+          console.log("error in getting the data");
+        } else {
+          console.log(booksData);
+          res.send(booksData);
+        }
+      });
     }
-})
+  });
+}
 
+function updateBookHandler(req, res) {
+  let { title, description, status } = req.body;
+  let bookID = req.params.BookID;
+  let email = req.query.email;
+  console.log(req.body);
+  bookModel.findOne({ _id: bookID }, (error, bookInfo) => {
+    ///get me the right rec ??!
+    console.log(bookInfo);
+    //update rec data
+    bookInfo.title = title;
+    bookInfo.description = description;
+    bookInfo.status = status;
 
+    console.log("aaaaaaaaaaaa", bookInfo);
+   ///save rec change then send res with all data to FE
 
+   bookInfo.save()
+   .then(()=>{
+    bookModel.find({ email: email }, function (err, booksData) {
+      if (err) {
+        console.log("error in getting the data");
+      } else {
+        console.log(booksData);
+        res.send(booksData);
+      }
+       })
+      }).catch(error=>{
+       console.log('error in saving ')
+   })
 
+      
+
+  });
 }
